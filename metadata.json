@@ -1,0 +1,7 @@
+{
+  "name": "MahaMaheswaramDham Temple Trust",
+  "description": "A modern, scalable web application for temple tourism, secure donations, and community social work initiatives.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
