@@ -1,72 +1,64 @@
 
 import React from 'react';
-import { Home, MapPin, Heart, Calendar, Info, ShieldCheck, Grid, MessageSquare } from 'lucide-react';
-import { DonationCampaign, TempleEvent, Facility, Banner, SocialPost } from './types';
+import { Home, MapPin, Heart, Calendar, Info, ShieldCheck, Grid, MessageSquare, Compass } from 'lucide-react';
+import { DonationCampaign, Facility, SocialPost } from './types';
 
 export const NAV_ITEMS = [
   { name: 'Home', path: '/', icon: <Home size={18} /> },
-  { name: 'Visit', path: '/visit', icon: <MapPin size={18} /> },
+  { name: 'Pilgrimage', path: '/visit', icon: <Compass size={18} /> },
   { name: 'Donations', path: '/donations', icon: <Heart size={18} /> },
   { name: 'Events', path: '/events', icon: <Calendar size={18} /> },
   { name: 'Facilities', path: '/facilities', icon: <Grid size={18} /> },
-  { name: 'Social', path: '/social', icon: <MessageSquare size={18} /> },
-  { name: 'About', path: '/about', icon: <Info size={18} /> },
+  { name: 'Chronicles', path: '/social', icon: <MessageSquare size={18} /> },
 ];
 
 export const CAMPAIGNS: DonationCampaign[] = [
   {
     id: '1',
-    title: 'Annadaan Seva',
+    title: 'Daily Annadaan Seva',
     category: 'Annadaan',
-    description: 'Help us feed the pilgrims and the needy who visit the dham daily. Each meal costs ₹50.',
+    description: 'Nourishing souls through the sacred tradition of free food distribution to pilgrims and the underprivileged.',
+    impactMessage: '₹50 provides a complete nutritious meal to one person.',
     imageUrl: 'https://images.unsplash.com/photo-1591189863430-ab87e120f312?auto=format&fit=crop&q=80&w=800',
     suggestedAmounts: [501, 1100, 2100, 5100],
-    currentAmount: 145000,
-    goalAmount: 500000,
+    currentAmount: 345000,
+    goalAmount: 1000000,
     featured: true,
   },
   {
     id: '2',
-    title: 'Gau Seva (Cow Care)',
+    title: 'Nanda Gaushala Support',
     category: 'Gau Seva',
-    description: 'Support our Gaushala providing shelter and medical care for abandoned cows.',
+    description: 'Providing a sanctuary for abandoned and aged cows with premium fodder and 24/7 veterinary care.',
+    impactMessage: '₹1000 provides green fodder for 5 cows for a day.',
     imageUrl: 'https://images.unsplash.com/photo-1545468843-27956f32958a?auto=format&fit=crop&q=80&w=800',
-    suggestedAmounts: [251, 501, 1001],
-    currentAmount: 89000,
-    goalAmount: 200000,
-    featured: false,
-  },
-  {
-    id: '3',
-    title: 'Vivah Bhawan Construction',
-    category: 'General',
-    description: 'Building a hall for underprivileged families to host sacred wedding ceremonies.',
-    imageUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=800',
-    suggestedAmounts: [1100, 5100, 11000, 21000],
-    currentAmount: 1245000,
-    goalAmount: 2500000,
+    suggestedAmounts: [251, 501, 1001, 2501],
+    currentAmount: 189000,
+    goalAmount: 500000,
     featured: true,
   },
   {
-    id: '4',
+    id: '3',
     title: 'Maha Yagya Purnahuti',
     category: 'Yagya',
-    description: 'Contribution towards materials for the monthly Maha Yagya ritual.',
+    description: 'Participate in the cosmic vibrations of our monthly Shanti Yagya for global peace.',
+    impactMessage: 'Includes a digital certificate of participation.',
     imageUrl: 'https://images.unsplash.com/photo-1621274403997-37aae1848b40?auto=format&fit=crop&q=80&w=800',
     suggestedAmounts: [1001, 2101, 5101],
-    currentAmount: 45000,
-    goalAmount: 100000,
+    currentAmount: 145000,
+    goalAmount: 300000,
     featured: false,
   },
   {
-    id: 'festival-1',
-    title: 'Special Diwali Deep Seva',
+    id: 'festival-diwali',
+    title: 'Deepawali Jyoti Seva',
     category: 'Festival',
-    description: 'Illuminate the dham with 11,000 diyas this Diwali festival.',
+    description: 'Help us light up the entire Dham complex with 21,000 traditional handmade earthen diyas.',
+    impactMessage: 'One Diya costs ₹11. Light as many as you wish.',
     imageUrl: 'https://images.unsplash.com/photo-1543059231-64582f3c3a9d?auto=format&fit=crop&q=80&w=800',
-    suggestedAmounts: [251, 501, 1101],
-    currentAmount: 12000,
-    goalAmount: 50000,
+    suggestedAmounts: [501, 1101, 2501, 5101],
+    currentAmount: 120000,
+    goalAmount: 250000,
     featured: true,
   }
 ];
@@ -74,40 +66,44 @@ export const CAMPAIGNS: DonationCampaign[] = [
 export const FACILITIES: Facility[] = [
   {
     id: 'f1',
-    name: 'Vivah Bhawan',
-    description: 'A spacious, culturally enriched hall dedicated to conducting weddings for low-income families at no or minimal cost.',
+    name: 'Mangal Vivah Bhawan',
+    description: 'A grand hall dedicated to helping economically weaker sections celebrate weddings with full Vedic rituals and dignity.',
     imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800',
-    rules: ['Booking 3 months in advance', 'Vegetarian food only', 'Max 200 guests'],
+    amenities: ['Vedic Mandap', 'Dining Hall', 'Guest Rooms', 'Kitchen Access'],
+    rules: ['Mandatory Vegetarianism', 'No Alcohol', 'Strict 10 PM Curfew'],
     status: 'Available',
-    enquiryCTA: 'Book for Wedding'
+    enquiryCTA: 'Book Venue'
   },
   {
     id: 'f2',
-    name: 'Open Air Divine Gym',
-    description: 'Equipped with modern fitness machines in a serene outdoor setting next to the park for holistic health.',
+    name: 'Shakti Open Gym',
+    description: 'Promoting Physical Seva (Body is the Temple) with state-of-the-art outdoor fitness equipment.',
     imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800',
-    rules: ['Open to all visitors', '6:00 AM to 9:00 PM', 'Proper footwear required'],
+    amenities: ['Pull-up Bars', 'Leg Press', 'Cardio Rowers'],
+    rules: ['Age 15+', 'Proper Footwear', 'Max 60 mins usage'],
     status: 'Available',
-    enquiryCTA: 'Check Timings'
+    enquiryCTA: 'Check Rules'
   },
   {
     id: 'f3',
-    name: 'Peace Park & Meditation Grove',
-    description: 'Lush greenery with thousands of native plants and quiet spots for meditation and prayer.',
+    name: 'Rishi Van Park',
+    description: 'A quiet ecological preserve for meditation, containing rare Himalayan herbs and sacred trees.',
     imageUrl: 'https://images.unsplash.com/photo-1518132047140-98da13edcfc2?auto=format&fit=crop&q=80&w=800',
-    rules: ['Keep silence', 'No littering', 'Pet friendly (on leash)'],
+    amenities: ['Meditation Pods', 'Herbal Garden', 'Walking Trail'],
+    rules: ['Silence Please', 'No Plastics', 'Dawn to Dusk'],
     status: 'Available',
-    enquiryCTA: 'View Map'
+    enquiryCTA: 'Explore Van'
   }
 ];
 
 export const POSTS: SocialPost[] = [
   {
     id: 'p1',
-    title: '1,000 Blankets Distributed',
-    content: 'Our winter drive successfully covered 5 neighboring villages. Thank you to all donors who made this possible.',
+    title: 'Transforming Lives through Seva',
+    content: 'Our latest winter distribution drive reached the remotest parts of the Divine Valley, providing warmth to over 500 families.',
     imageUrl: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&q=80&w=800',
-    tags: ['Charity', 'WinterDrive', 'Community'],
-    publishedAt: '2024-05-10'
+    tags: ['Impact', 'WinterDrive', 'Community'],
+    publishedAt: '2024-05-12',
+    author: 'Trust Editorial Team'
   }
 ];

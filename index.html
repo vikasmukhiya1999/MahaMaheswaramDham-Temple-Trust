@@ -6,20 +6,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MahaMaheswaramDham Temple Trust</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              vermillion: {
+                DEFAULT: '#FF5E13', // Sacred vibrant vermillion
+                light: '#FF8B57',
+                dark: '#D94B0D',
+              },
+              divineGold: {
+                DEFAULT: '#D4AF37',
+                glow: '#F4CF63',
+                deep: '#A67C00',
+              },
+              mysticTeal: {
+                DEFAULT: '#004D40', // Infinite Vedic Green
+                light: '#00796B',
+                dark: '#00251A',
+              },
+              sandalwood: {
+                DEFAULT: '#FFF9EF', // Soothing warm off-white
+                dark: '#F3E5D8',
+              },
+            }
+          }
+        }
+      }
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fdfaf7;
+            background-color: #FFF9EF;
+            color: #1A1A1A;
+            scroll-behavior: smooth;
         }
         h1, h2, h3, .font-display {
             font-family: 'Cinzel', serif;
+            letter-spacing: 0.04em;
         }
-        .bg-temple-gold { background-color: #D4AF37; }
-        .text-temple-gold { color: #D4AF37; }
-        .bg-saffron { background-color: #FF9933; }
-        .text-saffron { color: #FF9933; }
-        .gradient-saffron { background: linear-gradient(135deg, #FF9933 0%, #FFCC33 100%); }
+        .divine-gradient {
+            background: linear-gradient(135deg, #FF5E13 0%, #FFB347 100%);
+        }
+        .teal-gradient {
+            background: linear-gradient(135deg, #004D40 0%, #00796B 100%);
+        }
+        .mandala-bg {
+            background-image: radial-gradient(#FF5E13 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.03;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 94, 19, 0.1);
+        }
+        /* Divine Text Shadow for Titles */
+        .divine-text {
+            text-shadow: 0 4px 12px rgba(255, 94, 19, 0.2);
+        }
     </style>
 <script type="importmap">
 {
@@ -33,7 +80,8 @@
 }
 </script>
 </head>
-<body>
-    <div id="root"></div>
+<body class="relative">
+    <div class="fixed inset-0 mandala-bg pointer-events-none"></div>
+    <div id="root" class="relative z-10"></div>
 </body>
 </html>

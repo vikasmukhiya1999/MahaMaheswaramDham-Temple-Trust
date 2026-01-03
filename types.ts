@@ -6,16 +6,19 @@ export enum DonationStatus {
   FAILED = 'FAILED',
 }
 
+export type CategoryType = 'General' | 'Yagya' | 'Annadaan' | 'Gau Seva' | 'Festival';
+
 export interface DonationCampaign {
   id: string;
   title: string;
-  category: 'General' | 'Yagya' | 'Annadaan' | 'Gau Seva' | 'Festival';
+  category: CategoryType;
   description: string;
   imageUrl: string;
   suggestedAmounts: number[];
   goalAmount?: number;
   currentAmount: number;
   featured: boolean;
+  impactMessage?: string;
 }
 
 export interface TempleEvent {
@@ -38,15 +41,7 @@ export interface Facility {
   rules: string[];
   status: 'Available' | 'Full' | 'Maintenance';
   enquiryCTA: string;
-}
-
-export interface Banner {
-  id: string;
-  title: string;
-  subtitle: string;
-  imageUrl: string;
-  active: boolean;
-  order: number;
+  amenities?: string[];
 }
 
 export interface SocialPost {
@@ -56,6 +51,12 @@ export interface SocialPost {
   imageUrl: string;
   tags: string[];
   publishedAt: string;
+  author?: string;
+}
+
+export interface Message {
+  role: 'user' | 'ai';
+  text: string;
 }
 
 export interface User {

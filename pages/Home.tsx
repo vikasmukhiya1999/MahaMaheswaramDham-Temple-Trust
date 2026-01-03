@@ -1,21 +1,55 @@
 
-import React, { useState } from 'react';
-// Fixed: Removed non-existent 'EVENTS' from constants import as it's not exported or used
+import React, { useState, useEffect } from 'react';
 import { CAMPAIGNS } from '../constants';
-import { ArrowRight, Sparkles, MessageSquare, Send, X, Clock, Navigation } from 'lucide-react';
+import { ArrowRight, Sparkles, MessageSquare, Send, X, Clock, Navigation, ShieldCheck, Heart, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 import { askSpiritualGuide } from '../services/geminiService';
 
+const HERO_SLIDES = [
+  {
+    image: "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?auto=format&fit=crop&q=80&w=2200",
+    subtitle: "Vedic Tradition • Seva • Soul",
+    title: "Path to Eternal Divinity",
+    description: "Join a sanctuary of peace and service in the heart of the Divine Valley. Experience ancient rituals and modern compassion.",
+    primaryCTA: { text: "Plan Your Visit", path: "/visit", color: "bg-divineGold" },
+    secondaryCTA: { text: "Sacred Darshan", path: "/events", color: "bg-white/10" }
+  },
+  {
+    image: "https://images.unsplash.com/photo-1591189863430-ab87e120f312?auto=format&fit=crop&q=80&w=2200",
+    subtitle: "Compassion • Feeding • Love",
+    title: "Spirit of Sacred Giving",
+    description: "Your generosity fuels our mission to serve the underprivileged. Participate in the divine act of Annadaan and Gau Seva.",
+    primaryCTA: { text: "Offer Sacred Seva", path: "/donations", color: "bg-vermillion" },
+    secondaryCTA: { text: "View Impact", path: "/social", color: "bg-white/10" }
+  },
+  {
+    image: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&q=80&w=2200",
+    subtitle: "Community • Upliftment • Dharma",
+    title: "Seva to Humanity",
+    description: "Building bridges of hope through education, healthcare, and social initiatives. Be a part of our growing spiritual family.",
+    primaryCTA: { text: "Join our Mission", path: "/social", color: "bg-mysticTeal" },
+    secondaryCTA: { text: "Trust History", path: "/facilities", color: "bg-white/10" }
+  }
+];
+
 const Home: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([
-    { role: 'ai', text: 'Namaste! I am your spiritual guide. How can I assist you today?' }
+    { role: 'ai', text: 'Namaste! I am your spiritual guide. How can I assist you in your pilgrimage today?' }
   ]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!chatInput.trim()) return;
+    if (!chatInput.trim() || loading) return;
     
     const userMsg = chatInput;
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
@@ -23,197 +57,255 @@ const Home: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => 
     setLoading(true);
 
     const response = await askSpiritualGuide(userMsg);
-    setMessages(prev => [...prev, { role: 'ai', text: response || '...' }]);
+    setMessages(prev => [...prev, { role: 'ai', text: response || 'The divine connection is silent. Please try again later.' }]);
     setLoading(false);
   };
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://picsum.photos/seed/templehero/1920/1080" 
-            className="w-full h-full object-cover" 
-            alt="Temple Hero" 
-          />
-          <div className="absolute inset-0 bg-black/40 bg-gradient-to-t from-gray-900/80 via-transparent"></div>
-        </div>
+      {/* Rotating Hero Banner */}
+      <section className="relative h-[95vh] flex items-center justify-center overflow-hidden">
+        {HERO_SLIDES.map((slide, index) => (
+          <div 
+            key={index}
+            className={`absolute inset-0 z-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+          >
+            <img 
+              src={slide.image} 
+              className="w-full h-full object-cover brightness-[0.4]" 
+              alt={slide.title} 
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-mysticTeal/60 via-transparent to-sandalwood"></div>
+          </div>
+        ))}
         
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-saffron/20 backdrop-blur-md rounded-full border border-saffron/30 text-saffron-300 text-sm font-semibold mb-6">
-            <Sparkles size={16} />
-            Experience Divine Serenity
-          </div>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
-            Where Devotion Meets <br />
-            <span className="text-saffron">Divine Purpose</span>
-          </h1>
-          <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Join thousands of devotees in a journey of spirituality, service, and self-discovery at the Maha Maheswaram Dham.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              onClick={() => onNavigate('/donations')}
-              className="px-10 py-4 gradient-saffron text-white rounded-full font-bold text-lg shadow-2xl hover:scale-105 transition-transform"
-            >
-              Support Our Cause
-            </button>
-            <button 
-              onClick={() => onNavigate('/visit')}
-              className="px-10 py-4 bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-full font-bold text-lg hover:bg-white/20 transition-all"
-            >
-              Plan Your Visit
-            </button>
-          </div>
+        <div className="relative z-10 text-center px-6 max-w-6xl mx-auto">
+          {HERO_SLIDES.map((slide, index) => (
+            <div key={index} className={index === currentSlide ? 'block' : 'hidden'}>
+              <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/10 backdrop-blur-2xl rounded-full border border-white/20 text-divineGold-glow text-[12px] font-bold mb-10 uppercase tracking-[0.4em] animate-in fade-in duration-1000">
+                <Sparkles size={16} className="animate-pulse" />
+                {slide.subtitle}
+              </div>
+              <h1 className="text-6xl md:text-9xl font-bold text-white mb-8 leading-[1.05] divine-text font-display animate-in slide-in-from-bottom-12 duration-1000">
+                {slide.title.split(' ').map((word, i) => 
+                  word === 'Eternal' || word === 'Sacred' || word === 'Humanity' ? 
+                  <span key={i} className="text-vermillion italic"> {word} </span> : 
+                  ` ${word} `
+                )}
+              </h1>
+              <p className="text-xl md:text-2xl text-white/80 mb-14 max-w-3xl mx-auto leading-relaxed font-light animate-in fade-in duration-1000 delay-300">
+                {slide.description}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-8 justify-center items-center animate-in slide-in-from-bottom-8 duration-700 delay-500">
+                <button 
+                  onClick={() => onNavigate(slide.primaryCTA.path)}
+                  className={`px-14 py-6 ${slide.primaryCTA.color} text-white rounded-3xl font-bold text-lg shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 uppercase tracking-widest shadow-black/20`}
+                >
+                  {slide.primaryCTA.text}
+                </button>
+                <button 
+                  onClick={() => onNavigate(slide.secondaryCTA.path)}
+                  className="px-14 py-6 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white rounded-3xl font-bold text-lg hover:bg-white hover:text-mysticTeal transition-all duration-300 flex items-center gap-3"
+                >
+                  {slide.secondaryCTA.text} <ArrowRight size={22} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Slide Indicators */}
+        <div className="absolute bottom-32 left-1/2 -translate-x-1/2 flex gap-4 z-20">
+          {HERO_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentSlide(i)}
+              className={`h-2 rounded-full transition-all duration-500 ${i === currentSlide ? 'w-12 bg-vermillion' : 'w-2 bg-white/40 hover:bg-white'}`}
+            />
+          ))}
+        </div>
+
+        {/* Manual Navigation */}
+        <button 
+          onClick={() => setCurrentSlide((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1))}
+          className="absolute left-10 top-1/2 -translate-y-1/2 p-4 rounded-full bg-white/5 backdrop-blur-lg border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all z-20 hidden lg:block"
+        >
+          <ChevronLeft size={32} />
+        </button>
+        <button 
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
+          className="absolute right-10 top-1/2 -translate-y-1/2 p-4 rounded-full bg-white/5 backdrop-blur-lg border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all z-20 hidden lg:block"
+        >
+          <ChevronRight size={32} />
+        </button>
+      </section>
+
+      {/* Floating Info Cards */}
+      <section className="relative z-20 -mt-24 max-w-7xl mx-auto w-full px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            { 
+              icon: <Clock className="text-vermillion" />, 
+              title: "Temple Hours", 
+              desc: "4:00 AM — 10:00 PM", 
+              footer: "Mangala Aarti: 4:30 AM",
+              bg: "bg-white"
+            },
+            { 
+              icon: <Navigation className="text-vermillion" />, 
+              title: "Sacred Location", 
+              desc: "Divine Valley Road, Sec 12", 
+              footer: "Guided Map Available",
+              bg: "bg-white"
+            },
+            { 
+              icon: <ShieldCheck className="text-vermillion" />, 
+              title: "Verified Trust", 
+              desc: "ISO Certified & 80G Compliant", 
+              footer: "Transparent Stewardship",
+              bg: "bg-white shadow-xl ring-2 ring-vermillion/5"
+            }
+          ].map((info, i) => (
+            <div key={i} className={`${info.bg} p-12 rounded-[3.5rem] shadow-2xl shadow-mysticTeal/5 group hover:-translate-y-3 transition-all duration-500 border border-vermillion/5`}>
+              <div className="w-14 h-14 bg-vermillion/5 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                {info.icon}
+              </div>
+              <h3 className="text-2xl font-bold text-mysticTeal mb-3 font-display">{info.title}</h3>
+              <p className="text-gray-500 font-medium mb-6 text-sm">{info.desc}</p>
+              <div className="pt-6 border-t border-sandalwood-dark text-[11px] font-bold text-vermillion uppercase tracking-widest flex items-center justify-between">
+                <span>{info.footer}</span>
+                <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Quick Stats / Highlights */}
-      <section className="bg-white py-16 -mt-12 relative z-20 rounded-t-[3rem] shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="bg-orange-50 p-8 rounded-3xl border border-orange-100 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-saffron rounded-full flex items-center justify-center text-white mb-4 shadow-lg shadow-orange-200">
-                <Clock size={32} />
-              </div>
-              <h3 className="text-lg font-bold text-gray-800">Temple Timings</h3>
-              <p className="text-gray-600">4:00 AM - 10:00 PM</p>
-              <p className="text-xs text-saffron mt-2 font-semibold">Mangala Aarti: 4:30 AM</p>
-            </div>
-            <div className="bg-orange-50 p-8 rounded-3xl border border-orange-100 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-temple-gold rounded-full flex items-center justify-center text-white mb-4 shadow-lg shadow-orange-200">
-                <Navigation size={32} />
-              </div>
-              <h3 className="text-lg font-bold text-gray-800">Visit Us</h3>
-              <p className="text-gray-600">Divine Valley, Sector 12</p>
-              <p className="text-xs text-saffron mt-2 font-semibold hover:underline cursor-pointer">Get Directions</p>
-            </div>
-            <div className="bg-orange-50 p-8 rounded-3xl border border-orange-100 flex flex-col items-center text-center md:col-span-2">
-               <h3 className="text-xl font-bold mb-4">Our Social Impact</h3>
-               <div className="flex gap-8 justify-around w-full">
-                  <div>
-                    <div className="text-3xl font-bold text-saffron">10K+</div>
-                    <div className="text-sm text-gray-600">Daily Meals Served</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold text-saffron">500+</div>
-                    <div className="text-sm text-gray-600">Weddings Facilitated</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold text-saffron">100+</div>
-                    <div className="text-sm text-gray-600">Active Volunteers</div>
-                  </div>
-               </div>
-            </div>
+      {/* Campaign Showcase */}
+      <section className="py-48 px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
+          <div className="max-w-2xl">
+            <h2 className="text-5xl md:text-7xl font-bold text-mysticTeal mb-8 font-display divine-text">
+              Divine <span className="text-vermillion italic">Opportunities</span>
+            </h2>
+            <p className="text-lg text-gray-500 leading-relaxed font-light">
+              Participate in the sacred duty of giving. Every offering fuels a life-changing community project.
+            </p>
           </div>
+          <button 
+            onClick={() => onNavigate('/donations')} 
+            className="px-10 py-4 bg-mysticTeal text-white rounded-2xl font-bold text-sm hover:bg-mysticTeal-dark transition-all shadow-xl shadow-mysticTeal/20 flex items-center gap-3 uppercase tracking-widest"
+          >
+            All Campaigns <ArrowRight size={18} />
+          </button>
         </div>
-      </section>
 
-      {/* Featured Campaigns */}
-      <section className="py-24 bg-[#fdfaf7]">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Campaigns</h2>
-              <p className="text-gray-600">Every contribution, big or small, makes a profound difference.</p>
-            </div>
-            <button onClick={() => onNavigate('/donations')} className="hidden md:flex items-center text-saffron font-bold gap-2 group">
-              View All <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {CAMPAIGNS.filter(c => c.featured).map(campaign => (
-              <div key={campaign.id} className="bg-white rounded-[2rem] overflow-hidden border border-orange-100 shadow-xl shadow-orange-900/5 group">
-                <div className="relative h-64 overflow-hidden">
-                  <img src={campaign.imageUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={campaign.title} />
-                  <div className="absolute top-4 left-4 bg-saffron text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                    {campaign.category}
-                  </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          {CAMPAIGNS.filter(c => c.featured).map(campaign => (
+            <div key={campaign.id} className="bg-white rounded-[4rem] overflow-hidden border border-vermillion/5 shadow-2xl shadow-mysticTeal/5 group flex flex-col h-full hover:shadow-vermillion/10 transition-all duration-500">
+              <div className="relative h-80 overflow-hidden">
+                <img src={campaign.imageUrl} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={campaign.title} />
+                <div className="absolute top-8 left-8 bg-white/95 backdrop-blur-xl px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-mysticTeal shadow-xl">
+                  {campaign.category}
                 </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold mb-3 text-gray-900">{campaign.title}</h3>
-                  <p className="text-gray-600 text-sm mb-6 line-clamp-2">{campaign.description}</p>
-                  
-                  <div className="mb-6">
-                    <div className="flex justify-between text-xs font-bold text-gray-500 uppercase mb-2">
-                      <span>Raised: ₹{campaign.currentAmount.toLocaleString()}</span>
-                      <span>Goal: ₹{campaign.goalAmount?.toLocaleString()}</span>
-                    </div>
-                    <div className="w-full bg-orange-50 h-3 rounded-full overflow-hidden">
-                      <div 
-                        className="bg-saffron h-full transition-all duration-1000" 
-                        style={{ width: `${(campaign.currentAmount / (campaign.goalAmount || 1)) * 100}%` }}
-                      ></div>
-                    </div>
+              </div>
+              <div className="p-12 flex flex-col flex-1">
+                <h3 className="text-2xl font-bold mb-5 text-mysticTeal font-display leading-tight">{campaign.title}</h3>
+                <p className="text-gray-500 text-sm mb-10 flex-1 leading-relaxed font-light">{campaign.description}</p>
+                
+                {campaign.impactMessage && (
+                  <div className="mb-10 p-6 bg-sandalwood rounded-3xl border border-vermillion/10 text-xs font-bold text-vermillion italic flex items-center gap-4">
+                    <Sparkles size={16} /> <span>"{campaign.impactMessage}"</span>
                   </div>
+                )}
 
+                <div className="space-y-6 pt-10 border-t border-sandalwood-dark">
+                  <div className="flex justify-between items-end text-[11px] font-bold uppercase tracking-widest text-gray-400">
+                    <span>Goal Reached</span>
+                    <span className="text-vermillion">{Math.round((campaign.currentAmount / (campaign.goalAmount || 1)) * 100)}%</span>
+                  </div>
+                  <div className="w-full bg-sandalwood-dark h-3 rounded-full overflow-hidden p-0.5">
+                    <div 
+                      className="divine-gradient h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(255,94,19,0.3)]" 
+                      style={{ width: `${(campaign.currentAmount / (campaign.goalAmount || 1)) * 100}%` }}
+                    ></div>
+                  </div>
                   <button 
                     onClick={() => onNavigate('/donations')}
-                    className="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold hover:bg-black transition-colors"
+                    className="w-full py-5 bg-mysticTeal text-white rounded-3xl font-bold text-sm shadow-xl hover:bg-vermillion transition-all duration-300 uppercase tracking-widest active:scale-95"
                   >
-                    Donate Now
+                    Contribute Now
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* AI Chat Widget */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* AI Spiritual Concierge Widget */}
+      <div className="fixed bottom-12 right-12 z-50">
         {chatOpen ? (
-          <div className="bg-white w-[350px] sm:w-[400px] h-[500px] rounded-3xl shadow-2xl border border-orange-100 flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="gradient-saffron p-6 text-white flex justify-between items-center">
-              <div>
-                <h3 className="font-bold flex items-center gap-2">
-                  <Sparkles size={18} /> Spiritual Guide
-                </h3>
-                <p className="text-xs text-white/80">Available to help 24/7</p>
+          <div className="glass-panel w-[420px] sm:w-[480px] h-[680px] rounded-[4rem] shadow-[0_40px_120px_-20px_rgba(0,77,64,0.15)] flex flex-col overflow-hidden animate-in slide-in-from-bottom-12 duration-500">
+            <div className="divine-gradient p-12 text-white relative">
+              <div className="relative z-10 flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-2xl flex items-center gap-3 mb-1 font-display">
+                    Spiritual Guide
+                  </h3>
+                  <p className="text-[10px] text-white/70 uppercase font-bold tracking-widest">Divine Concierge Desk</p>
+                </div>
+                <button onClick={() => setChatOpen(false)} className="bg-black/10 p-3 rounded-full hover:bg-black/20 transition-colors">
+                  <X size={20} />
+                </button>
               </div>
-              <button onClick={() => setChatOpen(false)} className="text-white/80 hover:text-white">
-                <X size={24} />
-              </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-orange-50/30">
+            <div className="flex-1 overflow-y-auto p-10 space-y-10 scrollbar-hide bg-white/30">
               {messages.map((m, i) => (
                 <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                  <div className={`max-w-[85%] p-6 rounded-[2.5rem] text-[15px] leading-relaxed font-medium shadow-sm border border-vermillion/5 ${
                     m.role === 'user' 
-                      ? 'bg-saffron text-white rounded-br-none' 
-                      : 'bg-white text-gray-800 border border-orange-100 shadow-sm rounded-bl-none'
+                      ? 'bg-mysticTeal text-white rounded-br-none' 
+                      : 'bg-white text-gray-800 rounded-bl-none'
                   }`}>
                     {m.text}
                   </div>
                 </div>
               ))}
-              {loading && <div className="text-xs text-gray-400 animate-pulse">Assistant is contemplating...</div>}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="bg-white p-6 rounded-3xl shadow-sm flex gap-2">
+                    <div className="w-2 h-2 bg-vermillion rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-vermillion rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="w-2 h-2 bg-vermillion rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <form onSubmit={handleChatSubmit} className="p-4 bg-white border-t border-orange-100 flex gap-2">
+            <form onSubmit={handleChatSubmit} className="p-10 bg-white border-t border-sandalwood-dark flex gap-4 items-center">
               <input 
                 type="text" 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Ask about puja, timings, or seva..." 
-                className="flex-1 bg-gray-50 border-none focus:ring-2 focus:ring-saffron rounded-xl px-4 text-sm"
+                placeholder="Ask about Timings, Pujas..." 
+                className="flex-1 bg-sandalwood border-none focus:ring-2 focus:ring-vermillion/20 rounded-2xl px-8 py-5 text-sm font-medium"
               />
-              <button type="submit" className="p-3 bg-saffron text-white rounded-xl hover:bg-orange-600 transition-colors">
-                <Send size={20} />
+              <button type="submit" className="p-5 divine-gradient text-white rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl shadow-vermillion/20">
+                <Send size={24} />
               </button>
             </form>
           </div>
         ) : (
           <button 
             onClick={() => setChatOpen(true)}
-            className="w-16 h-16 rounded-full gradient-saffron text-white shadow-2xl flex items-center justify-center hover:scale-110 transition-transform group"
+            className="w-24 h-24 rounded-full divine-gradient text-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group relative border-4 border-white shadow-vermillion/30"
           >
-            <MessageSquare size={28} />
-            <span className="absolute right-20 bg-gray-900 text-white px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-              How can I help you?
+            <MessageSquare size={36} />
+            <div className="absolute -top-1 -right-1 w-7 h-7 bg-green-500 border-4 border-white rounded-full"></div>
+            <span className="absolute right-28 bg-mysticTeal text-white px-6 py-4 rounded-[2rem] text-xs font-bold uppercase tracking-widest whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all shadow-2xl pointer-events-none -translate-x-4 group-hover:translate-x-0">
+              Guide Online
             </span>
           </button>
         )}
